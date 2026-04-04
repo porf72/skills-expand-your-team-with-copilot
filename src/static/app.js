@@ -499,6 +499,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Format the schedule using the new helper function
     const formattedSchedule = formatSchedule(details);
 
+    // Generate share URLs
+    const shareUrl = `${window.location.origin}${window.location.pathname}?activity=${encodeURIComponent(name)}`;
+    const shareEmailSubject = encodeURIComponent(`${name} - Mergington High School`);
+    const shareEmailBody = encodeURIComponent(
+      `Check out this activity:\n\n${name}\n${details.description}\nSchedule: ${formattedSchedule}\n\nSign up here: ${shareUrl}`
+    );
+    const shareWhatsappText = encodeURIComponent(
+      `Check out "${name}" at Mergington High School!\nSchedule: ${formattedSchedule}\n${shareUrl}`
+    );
+
     // Create activity tag
     const tagHtml = `
       <span class="activity-tag" style="background-color: ${typeInfo.color}; color: ${typeInfo.textColor}">
@@ -568,6 +578,16 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `
         }
+        <div class="share-container">
+          <button class="share-button" data-activity="${name}" aria-label="Share ${name}">
+            🔗 Share
+          </button>
+          <div class="share-menu hidden" role="menu">
+            <button class="share-option share-copy-link" data-url="${shareUrl}">📋 Copy Link</button>
+            <a class="share-option" href="mailto:?subject=${shareEmailSubject}&body=${shareEmailBody}" rel="noopener">📧 Email</a>
+            <a class="share-option" href="https://wa.me/?text=${shareWhatsappText}" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+          </div>
+        </div>
       </div>
     `;
 
@@ -586,6 +606,59 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+
+    // Share button handler
+    const shareButton = activityCard.querySelector(".share-button");
+    shareButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const actName = e.currentTarget.dataset.activity;
+      const actDetails = allActivities[actName];
+      const url = `${window.location.origin}${window.location.pathname}?activity=${encodeURIComponent(actName)}`;
+      const text = `Check out "${actName}" at Mergington High School! Schedule: ${formatSchedule(actDetails)}`;
+
+      // Use native share API if available (mobile devices)
+      if (navigator.share) {
+        navigator.share({
+          title: `${actName} - Mergington High School`,
+          text: text,
+          url: url,
+        }).catch(() => {});
+        return;
+      }
+
+      // Toggle dropdown menu for desktop
+      const menu = activityCard.querySelector(".share-menu");
+      const isHidden = menu.classList.contains("hidden");
+
+      // Close all other open share menus first
+      document.querySelectorAll(".share-menu").forEach((m) => m.classList.add("hidden"));
+
+      if (isHidden) {
+        menu.classList.remove("hidden");
+      }
+    });
+
+    // Copy link handler
+    const copyLinkBtn = activityCard.querySelector(".share-copy-link");
+    copyLinkBtn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const url = e.currentTarget.dataset.url;
+
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        // Fallback for older browsers
+        const textArea = document.createElement("textarea");
+        textArea.value = url;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+
+      showMessage("Link copied to clipboard!", "success");
+      activityCard.querySelector(".share-menu").classList.add("hidden");
+    });
 
     activitiesList.appendChild(activityCard);
   }
@@ -861,8 +934,30 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeRangeFilter,
   };
 
+  // Close share menus when clicking outside
+  document.addEventListener("click", () => {
+    document.querySelectorAll(".share-menu").forEach((m) => m.classList.add("hidden"));
+  });
+
+  // Scroll to and highlight an activity from a shared link (?activity=...)
+  function handleActivityLink() {
+    const params = new URLSearchParams(window.location.search);
+    const activityName = params.get("activity");
+    if (!activityName) return;
+
+    const cards = document.querySelectorAll(".activity-card");
+    cards.forEach((card) => {
+      const title = card.querySelector("h4");
+      if (title && title.textContent === activityName) {
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
+        card.classList.add("highlight-card");
+        setTimeout(() => card.classList.remove("highlight-card"), 2500);
+      }
+    });
+  }
+
   // Initialize app
   checkAuthentication();
   initializeFilters();
-  fetchActivities();
+  fetchActivities().then(handleActivityLink);
 });

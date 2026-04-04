@@ -183,13 +183,6 @@ section h3 {
   line-height: 1.4;
 }
 
-.activity-card-actions {
-  margin-top: auto;
-  padding-top: 10px;
-  display: flex;
-  justify-content: center;
-}
-
 /* Activity Tag */
 .activity-tag {
   position: absolute;
@@ -466,6 +459,90 @@ button {
   border: 1px dashed var(--border);
   margin: 10px 0;
   font-size: 0.85rem;
+}
+
+/* Activity card actions */
+.activity-card-actions {
+  margin-top: auto;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Share button and dropdown */
+.share-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.share-button {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.share-button:hover {
+  background-color: var(--background);
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+}
+
+.share-menu {
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  min-width: 150px;
+  overflow: hidden;
+}
+
+.share-option {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  text-align: left;
+  background: none;
+  color: var(--text-primary);
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  font-size: 0.82rem;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.share-option:last-child {
+  border-bottom: none;
+}
+
+.share-option:hover {
+  background-color: var(--background);
+}
+
+/* Highlight animation for shared activity links */
+.highlight-card {
+  animation: highlight-pulse 0.8s ease 2;
+  border-color: var(--secondary) !important;
+}
+
+@keyframes highlight-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 111, 0, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(255, 111, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 111, 0, 0); }
 }
 
 footer {
