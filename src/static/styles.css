@@ -617,6 +617,9 @@ footer {
   position: absolute;
   top: 10px;
   right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 #user-status {
@@ -663,4 +666,53 @@ footer {
 
 #logout-button:hover {
   background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Dark mode toggle button */
+#dark-mode-toggle {
+  padding: 4px 10px;
+  font-size: 1rem;
+}
+
+/* Dark mode styles */
+body.dark-mode {
+  --background: #121212;
+  --surface: #1e1e1e;
+  --text-primary: #e0e0e0;
+  --text-secondary: #aaaaaa;
+  --border: #333333;
+  --border-light: #2a2a2a;
+  --border-focus: #555555;
+  --primary: #534bae;
+  --primary-light: #7c6fd4;
+  --primary-dark: #3730a3;
+  --success-light: #1b3a1e;
+  --warning-light: #3a2e00;
+  --error-light: #3a1414;
+  --info-light: #0c2a30;
+}
+
+body.dark-mode .activity-tag {
+  background: #2a2a4a;
+  color: #9fa8da;
+}
+
+body.dark-mode .search-box input {
+  background-color: var(--surface);
+  color: var(--text-primary);
+}
+
+body.dark-mode .modal-content {
+  background-color: var(--surface);
+  color: var(--text-primary);
+}
+
+body.dark-mode .modal-content input {
+  background-color: #2a2a2a;
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+body.dark-mode .modal-content label {
+  color: var(--text-primary);
 }
