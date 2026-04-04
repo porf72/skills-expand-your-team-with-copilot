@@ -948,7 +948,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cards = document.querySelectorAll(".activity-card");
     cards.forEach((card) => {
       const title = card.querySelector("h4");
-      if (title && title.textContent === activityName) {
+      if (title && title.textContent.trim() === activityName) {
         card.scrollIntoView({ behavior: "smooth", block: "center" });
         card.classList.add("highlight-card");
         setTimeout(() => card.classList.remove("highlight-card"), 2500);
